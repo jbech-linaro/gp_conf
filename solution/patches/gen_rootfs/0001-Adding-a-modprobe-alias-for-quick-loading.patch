@@ -1,0 +1,22 @@
+From b0e8c17b02fead20563982dd99896d630875f024 Mon Sep 17 00:00:00 2001
+From: Joakim Bech <joakim.bech@linaro.org>
+Date: Sun, 13 Sep 2015 15:18:45 +0200
+Subject: [PATCH] Adding a modprobe alias for quick loading
+
+Signed-off-by: Joakim Bech <joakim.bech@linaro.org>
+---
+ etc/profile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/etc/profile b/etc/profile
+index dc36bd1..563677b 100644
+--- a/etc/profile
++++ b/etc/profile
+@@ -15,3 +15,4 @@ if [ -e "/etc/profile.local" ]; then
+ fi
+ 
+ alias ll='ls -al'
++alias mp='modprobe optee_armtz && sleep 1 && tee-supplicant &'
+-- 
+1.9.1
+

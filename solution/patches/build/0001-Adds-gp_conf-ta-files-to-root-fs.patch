@@ -1,0 +1,30 @@
+From 37e2797125518c70d1c59964395ac56e4ecc6b09 Mon Sep 17 00:00:00 2001
+From: Joakim Bech <joakim.bech@linaro.org>
+Date: Sun, 13 Sep 2015 15:24:58 +0200
+Subject: [PATCH] Adds gp_conf ta files to root fs
+
+Signed-off-by: Joakim Bech <joakim.bech@linaro.org>
+---
+ qemu.mk | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/qemu.mk b/qemu.mk
+index 62da0f6..68544bf 100644
+--- a/qemu.mk
++++ b/qemu.mk
+@@ -150,10 +150,12 @@ xtest-patch: xtest-patch-common
+ filelist-tee: xtest
+ 	@echo "# xtest / optee_test" > $(GEN_ROOTFS_FILELIST)
+ 	@find $(OPTEE_TEST_OUT_PATH) -type f -name "xtest" | sed 's/\(.*\)/file \/bin\/xtest \1 755 0 0/g' >> $(GEN_ROOTFS_FILELIST)
++	@echo "file /bin/gp_conf_client $(ROOT)/gp_conf/host/gp_conf_client 755 0 0" >> $(GEN_ROOTFS_FILELIST)
+ 	@echo "# TAs" >> $(GEN_ROOTFS_FILELIST)
+ 	@echo "dir /lib/optee_armtz 755 0 0" >> $(GEN_ROOTFS_FILELIST)
+ 	@find $(OPTEE_TEST_OUT_PATH) -name "*.ta" | \
+ 		sed 's/\(.*\)\/\(.*\)/file \/lib\/optee_armtz\/\2 \1\/\2 444 0 0/g' >> $(GEN_ROOTFS_FILELIST)
++	@echo "file /lib/optee_armtz/67707465-6563-6f6e-666c696e61726f15.ta $(ROOT)/out/gp_conf_ta/67707465-6563-6f6e-666c696e61726f15.ta 444 0 0" >> $(GEN_ROOTFS_FILELIST)
+ 	@echo "# Secure storage dig" >> $(GEN_ROOTFS_FILELIST)
+ 	@echo "dir /data 755 0 0" >> $(GEN_ROOTFS_FILELIST)
+ 	@echo "dir /data/tee 755 0 0" >> $(GEN_ROOTFS_FILELIST)
+-- 
+1.9.1
+
