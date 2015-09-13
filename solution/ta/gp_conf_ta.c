@@ -137,13 +137,12 @@ static TEE_Result invoke_generate_hash(uint32_t param_types,
 
 	if (res != TEE_SUCCESS) {
 		DMSG("TEE_DigestDoFinal failed! res: 0x%x", res);
-		goto out;
 	}
 out:
 	if (operation)
 		TEE_FreeOperation(operation);
 
-	return TEE_SUCCESS;
+	return res;
 }
 
 static TEE_Result invoke_get_random(uint32_t param_types, TEE_Param params[4])

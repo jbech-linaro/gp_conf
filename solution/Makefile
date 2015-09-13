@@ -1,5 +1,4 @@
-
-export V?=0
+export V ?= 0
 
 .PHONY: all
 all:
@@ -10,4 +9,3 @@ all:
 clean:
 	make -C host clean
 	make -C ta clean
-	

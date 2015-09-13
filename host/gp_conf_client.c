@@ -96,102 +96,67 @@ void trigger_ta_print(void)
 	TEEC_FinalizeContext(&ctx);
 }
 
+/*
+ * This function should send the string "abc" to secure side and secure side
+ * will hash (SHA1) the string and send it back to the client in normal world
+ * user space.
+ *
+ * Correct sha1("abc") = a9993e364706816aba3e25717850c26c9cd0d89d
+ */
 void get_hash(void)
 {
-	TEEC_Context ctx;
-	TEEC_Operation op;
-	TEEC_Result res;
-	TEEC_Session session;
-	TEEC_UUID uuid = GP_CONF_TA_UUID;
-	uint32_t err_origin;
-
+#ifdef REMOVE_AND_FILL_IN_MISSING
 	const char *message = "abc";
-	uint8_t hash[20];
-	memset(hash, 0, sizeof(hash));
 
-	/* Initialize a context connecting us to the TEE */
-	res = TEEC_InitializeContext(NULL, &ctx);
-	if (res != TEEC_SUCCESS)
-		errx(1, "TEEC_InitializeContext failed with code 0x%x", res);
+	/* 
+	 * Spec:
+	 * TEEC_Result TEEC_InitializeContext(const char* name,
+	 *                        	      TEEC_Context* context)
+	 */
+	res = TEEC_InitializeContext();
 
-	res = TEEC_OpenSession(&ctx, &session, &uuid, TEEC_LOGIN_PUBLIC, NULL,
-			       NULL, &err_origin);
-	if (res != TEEC_SUCCESS)
-		errx(1, "TEEC_Opensession failed with code 0x%x origin 0x%x",
-		     res, err_origin);
+	/*
+	 * Spec:
+	 * TEEC_Result TEEC_OpenSession(TEEC_Context* context,
+	 * 				TEEC_Session* session,
+	 * 				const TEEC_UUID* destination,
+	 * 				uint32_t connectionMethod,
+	 * 				const void* connectionData,
+	 * 				TEEC_Operation* operation,
+	 * 				uint32_t* returnOrigin)
+	 */
+	res = TEEC_OpenSession();
 
-	memset(&op, 0, sizeof(op));
-	op.paramTypes = TEEC_PARAM_TYPES(TEEC_MEMREF_TEMP_INPUT,
-					 TEEC_MEMREF_TEMP_OUTPUT,
-					 TEEC_NONE,
-					 TEEC_NONE);
+	/*
+	 * Spec:
+	 * TEEC_Result TEEC_InvokeCommand(TEEC_Session* session,
+	 * 				  uint32_t commandID,
+	 * 				  TEEC_Operation* operation,
+	 * 				  uint32_t* returnOrigin)
+	 */
+	res = TEEC_InvokeCommand();
 
-	op.params[0].tmpref.buffer = (void *)message;
-	op.params[0].tmpref.size = strlen(message);
+	/*
+	 * Spec:
+	 * void TEEC_CloseSession(TEEC_Session* session)
+	 */
+	TEEC_CloseSession();
 
-	op.params[1].tmpref.buffer = (void *)hash;
-	op.params[1].tmpref.size = sizeof(hash);
-
-	res = TEEC_InvokeCommand(&session, GP_CONF_TA_HASH, &op, &err_origin);
-	if (res != TEEC_SUCCESS)
-		errx(1, "TEEC_InvokeCommand failed with code 0x%x origin 0x%x",
-		     res, err_origin);
-
-	
-	fprintf(stdout, "Hash of string \"%s\" from secure world\n", message);
-	dump_hash(hash, sizeof(hash));
-
-	/* We're done with the TA, close the session ... */
-	TEEC_CloseSession(&session);
-
-	/* ... and destroy the context. */
-	TEEC_FinalizeContext(&ctx);
+	/*
+	 * Spec:
+	 * void TEEC_FinalizeContext(TEEC_Context* context)
+	 */
+	TEEC_FinalizeContext();
+#endif
 }
 
+/*
+ * This function should send a buffer of a certain length to secure side, where
+ * secure side is supposed to generate a random number, which then are sent back
+ * to the client in normal world / user space.
+ */
 void get_random(void)
 {
-	TEEC_Context ctx;
-	TEEC_Operation op;
-	TEEC_Result res;
-	TEEC_Session session;
-	TEEC_UUID uuid = GP_CONF_TA_UUID;
-	uint32_t err_origin;
-
-	uint8_t random_data[20];
-
-	/* Initialize a context connecting us to the TEE */
-	res = TEEC_InitializeContext(NULL, &ctx);
-	if (res != TEEC_SUCCESS)
-		errx(1, "TEEC_InitializeContext failed with code 0x%x", res);
-
-	res = TEEC_OpenSession(&ctx, &session, &uuid, TEEC_LOGIN_PUBLIC, NULL,
-			       NULL, &err_origin);
-	if (res != TEEC_SUCCESS)
-		errx(1, "TEEC_Opensession failed with code 0x%x origin 0x%x",
-		     res, err_origin);
-
-	memset(&op, 0, sizeof(op));
-	op.paramTypes = TEEC_PARAM_TYPES(TEEC_MEMREF_TEMP_INOUT,
-					 TEEC_NONE,
-					 TEEC_NONE,
-					 TEEC_NONE);
-
-	op.params[0].tmpref.buffer = (void *)random_data;
-	op.params[0].tmpref.size = sizeof(random_data);
-
-	res = TEEC_InvokeCommand(&session, GP_CONF_TA_RANDOM, &op, &err_origin);
-	if (res != TEEC_SUCCESS)
-		errx(1, "TEEC_InvokeCommand failed with code 0x%x origin 0x%x",
-		     res, err_origin);
-
-	fprintf(stdout, "Random data from secure world\n");
-	dump_hash(random_data, sizeof(random_data));
-
-	/* We're done with the TA, close the session ... */
-	TEEC_CloseSession(&session);
-
-	/* ... and destroy the context. */
-	TEEC_FinalizeContext(&ctx);
 }
 
 int main(int argc, char *argv[])

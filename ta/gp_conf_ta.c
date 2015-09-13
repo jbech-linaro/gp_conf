@@ -85,6 +85,9 @@ void TA_CloseSessionEntryPoint(void *sess_ctx)
 	DMSG("has been called");
 }
 
+/*
+ * This function just print the message in the first buffer.
+ */
 static TEE_Result invoke_print(uint32_t param_types, TEE_Param params[4])
 {
 	uint32_t exp_param_types = TEE_PARAM_TYPES(TEE_PARAM_TYPE_MEMREF_INPUT,
@@ -99,73 +102,35 @@ static TEE_Result invoke_print(uint32_t param_types, TEE_Param params[4])
 	return TEE_SUCCESS;
 }
 
+/*
+ * This function should calculate the hash (sha1) of the incoming message. The
+ * hash should be sent back to the normal world user space.
+ */
 static TEE_Result invoke_generate_hash(uint32_t param_types,
 				       TEE_Param params[4])
 {
-	TEE_Result res = TEE_ERROR_BAD_PARAMETERS;
-
+	TEE_Result res = TEE_ERROR_NOT_SUPPORTED;
+	(void)param_types;
+	(void)params;
+#ifdef REMOVE_AND_FILL_IN_MISSING
 	void *message = NULL;
 	size_t message_len;
 
 	void *digest = NULL;
 	size_t digest_len;
-
-	TEE_OperationHandle operation;
-
-	uint32_t exp_param_types = TEE_PARAM_TYPES(TEE_PARAM_TYPE_MEMREF_INPUT,
-						   TEE_PARAM_TYPE_MEMREF_OUTPUT,
-						   TEE_PARAM_TYPE_NONE,
-						   TEE_PARAM_TYPE_NONE);
-	DMSG("has been called");
-	if (param_types != exp_param_types)
-		return TEE_ERROR_BAD_PARAMETERS;
-
-	message = params[0].memref.buffer;
-	message_len = params[0].memref.size;
-
-	digest = params[1].memref.buffer;
-	digest_len = params[1].memref.size;
-
-	res = TEE_AllocateOperation(&operation, TEE_ALG_SHA1, TEE_MODE_DIGEST, 0);
-
-	if (res != TEE_SUCCESS) {
-		DMSG("TEE_AllocateOperation failed! res: 0x%x", res);
-		goto out;
-	}
-
-	res = TEE_DigestDoFinal(operation, message, message_len, digest, &digest_len);
-
-	if (res != TEE_SUCCESS) {
-		DMSG("TEE_DigestDoFinal failed! res: 0x%x", res);
-		goto out;
-	}
-out:
-	if (operation)
-		TEE_FreeOperation(operation);
-
-	return TEE_SUCCESS;
+#endif
+	return res;
 }
 
+/*
+ * This function should generate a random number and send it back to the user
+ * provided buffer.
+ */
 static TEE_Result invoke_get_random(uint32_t param_types, TEE_Param params[4])
 {
-	uint8_t *random_data;
-	uint32_t data_length;
-
-	uint32_t exp_param_types = TEE_PARAM_TYPES(TEE_PARAM_TYPE_MEMREF_INOUT,
-						   TEE_PARAM_TYPE_NONE,
-						   TEE_PARAM_TYPE_NONE,
-						   TEE_PARAM_TYPE_NONE);
-
-	DMSG("has been called");
-	if (param_types != exp_param_types)
-		return TEE_ERROR_BAD_PARAMETERS;
-
-	random_data = params[0].memref.buffer;
-	data_length = params[0].memref.size;
-
-	TEE_GenerateRandom(random_data, data_length);
-
-	return TEE_SUCCESS;
+	(void)param_types;
+	(void)params;
+	return TEE_ERROR_NOT_SUPPORTED;
 }
 
 /*
