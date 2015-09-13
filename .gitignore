@@ -1,0 +1,7 @@
+GPATH
+GRTAGS
+GSYMS
+GTAGS
+*.swp
+*.o
+gp_conf_client
