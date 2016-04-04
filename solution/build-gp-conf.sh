@@ -3,7 +3,7 @@
 ROOT=${PWD}/../..
 export PATH=${ROOT}/toolchains/aarch32/bin:$PATH
 
-export TA_DEV_KIT_DIR=${ROOT}/optee_os/out/arm-plat-vexpress/export-user_ta
+export TA_DEV_KIT_DIR=${ROOT}/optee_os/out/arm/export-ta_arm32
 export TEEC_EXPORT=${ROOT}/optee_client/out/export
 export PLATFORM=vexpress
 export PLATFORM_FLAVOR=qemu_virt
