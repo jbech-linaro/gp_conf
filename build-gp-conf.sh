@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ROOT=${PWD}/../..
+ROOT=${PWD}/..
 export PATH=${ROOT}/toolchains/aarch32/bin:$PATH
 
 export TA_DEV_KIT_DIR=${ROOT}/optee_os/out/arm/export-ta_arm32
@@ -8,8 +8,8 @@ export TEEC_EXPORT=${ROOT}/optee_client/out/export
 export PLATFORM=vexpress
 export PLATFORM_FLAVOR=qemu_virt
 
-cd ${ROOT}/gp_conf/solution
-make O=${ROOT}/out/gp_conf_ta/solution \
+cd ${ROOT}/gp_conf
+make O=${ROOT}/out/gp_conf_ta \
                 HOST_CROSS_COMPILE=arm-linux-gnueabihf- \
                 TA_CROSS_COMPILE=arm-linux-gnueabihf- \
                 $@
