@@ -1,4 +1,3 @@
-
 CC      = $(CROSS_COMPILE)gcc
 LD      = $(CROSS_COMPILE)ld
 AR      = $(CROSS_COMPILE)ar
