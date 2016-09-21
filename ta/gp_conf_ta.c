@@ -126,6 +126,9 @@ static TEE_Result invoke_generate_hash(uint32_t param_types,
 	digest = params[1].memref.buffer;
 	digest_len = params[1].memref.size;
 
+	/* Clear the digest */
+	memset(&digest, 0, digest_len);
+
 	res = TEE_AllocateOperation(&operation, TEE_ALG_SHA1, TEE_MODE_DIGEST, 0);
 
 	if (res != TEE_SUCCESS) {
@@ -133,7 +136,7 @@ static TEE_Result invoke_generate_hash(uint32_t param_types,
 		goto out;
 	}
 
-	res = TEE_DigestDoFinal(operation, message, message_len, digest, &digest_len);
+	res = TEE_DigestDoFinal(operation, message, message_len, message, &digest_len);
 
 	if (res != TEE_SUCCESS) {
 		DMSG("TEE_DigestDoFinal failed! res: 0x%x", res);
