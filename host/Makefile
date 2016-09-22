@@ -11,12 +11,13 @@ OBJS = gp_conf_client.o
 CFLAGS += -Wall -I../ta/include -I$(TEEC_EXPORT)/include -I./include -DDEBUG
 LDADD += -lteec -L$(TEEC_EXPORT)/lib
 
+BINARY=gp_conf_client
 .PHONY: all
-all: gp_conf_client
+all: $(BINARY)
 
-gp_conf_client: $(OBJS)
+$(BINARY): $(OBJS)
 	$(CC) $(LDADD) -o $@ $^
 
 .PHONY: clean
 clean:
-	rm -f $(OBJS) gp_conf_client
+	rm -f $(OBJS) $(BINARY)
